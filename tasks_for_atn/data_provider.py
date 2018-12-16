@@ -7,6 +7,7 @@ import random
 import matplotlib.pyplot as plt
 import math
 from scipy.linalg import logm
+import matplotlib.pyplot as plt
 
 
 class DataProvider:
@@ -35,6 +36,7 @@ class DataProvider:
         self.test_theta = []
         t_x = 0
         t_y = 0
+
         for img_str in files:
             if t_x+crop_size <= img_sz and t_y+crop_size <= crop_size:
 
@@ -49,7 +51,7 @@ class DataProvider:
 
                 # if there is a rotation:
                 M = cv2.getRotationMatrix2D((img_sz / 2,img_sz / 2),np.rad2deg(rot),1)
-                I = cv2.warpAffine(I,M,(img_sz,img_sz))
+                I = cv2.warpAffine(I,M,(img_sz,img_sz), cv2.INTER_LANCZOS4)
 
                 crop = I[t_y:t_y+crop_size, t_x:t_x+crop_size, :]
                 crop = crop / 255.
@@ -66,21 +68,12 @@ class DataProvider:
                 img = np.reshape(img,(img_sz * img_sz * num_channels))
                 crop = np.reshape(crop,(crop_size * crop_size * num_channels))
 
-                # ----- create the ground-truth theta:
+                # ----- create the ground-truth theta: translation & rotation:
                 theta_gt = np.zeros((6))
-
-                # translation $ rotation:
                 theta_gt[2] = float(t_x) / 64
                 theta_gt[5] = float(t_y) / 64
                 theta_gt[1] = -rot
                 theta_gt[3] = rot
-
-                # Rotation:
-                # cos_val = np.cos(np.deg2rad(j*10))
-                # sin_val = np.sin(np.deg2rad(j*10))
-                # theta_gt[0] = theta_gt[4] = cos_val
-                # theta_gt[3] = sin_val
-                # theta_gt[1] = -sin_val
 
                 self.train_crop.append(crop)
                 self.train.append(img)
@@ -89,7 +82,6 @@ class DataProvider:
                 self.test_crop.append(crop)
                 self.test_theta.append(theta_gt)
 
-                #j += 2
             else:
                 t_x = 0
                 t_y = 0
@@ -102,13 +94,6 @@ class DataProvider:
         self.test_theta = np.array(self.test_theta)
         self.train_size = self.train.shape[0]
         self.test_size = self.test.shape[0]
-
-        # plt.imshow(self.train[0, ...])
-        # plt.show()
-        # plt.imshow(self.train[j//2, ...])
-        # plt.show()
-        # plt.imshow(self.train[j-1, ...])
-        # plt.show()
 
         print('Finished uploading data, Train data shape:', self.train.shape, '; Test data shape:', self.test.shape)
 

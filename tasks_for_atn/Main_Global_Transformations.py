@@ -38,7 +38,7 @@ def main():
     # Here you can play with some parameters.
     digit_to_align = 4  #the digit which should we align
     n_epochs = 1
-    iter_per_epoch = 10000
+    iter_per_epoch = 7000
     batch_size = 16
     num_channels = 3
 
@@ -239,10 +239,10 @@ def plot_results(batch_x, x_theta_gt_val, x_theta_val, img_sz, num_channels):
     PlotImages(4,1,2,1,panoramas,titles,'gray',axis=True,colorbar=False)
 
     plt.show()
-    fig1.savefig('1_X.png')
-    fig2.savefig('2_GT Theta.png')
-    fig3.savefig('3_Theta.png')
-    fig4.savefig('4_Panorama.png')
+    fig1.savefig('1_X.png', dpi=1000)
+    fig2.savefig('2_GT Theta.png', dpi=1000)
+    fig3.savefig('3_Theta.png', dpi=1000)
+    fig4.savefig('4_Panorama.png', dpi=1000)
 
 
 def nan_if(lst):
